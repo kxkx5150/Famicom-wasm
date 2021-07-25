@@ -7,8 +7,8 @@ python 2.7.*
 emsdk 1.40.0  
 
 
-npm install  
-npm run build
+1. npm install  
+2. npm run build
 
 
 
