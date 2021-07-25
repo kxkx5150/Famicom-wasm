@@ -4,6 +4,11 @@ nes emulator
 
 <br><br><br><br><br>
 
+Demo  
+https://kxkx5150.github.io/Famicom-wasm/
+
+<br><br><br><br><br>
+
 python 2.7.\*  
 SCons  
 emsdk 1.40.0
