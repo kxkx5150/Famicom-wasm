@@ -54,7 +54,13 @@ document.getElementById('pauseButton').addEventListener('click', (e) => {
   let flg = fceux.paused();
   fceux.setPaused(!flg);
 });
-document.getElementById('speed').addEventListener('change', (e) => {});
+document.getElementById('speed').addEventListener('change', (e) => {
+  if(e.target.value-0 === 1){
+    fceux.setThrottling(false);
+  }else{
+    fceux.setThrottling(true);
+  }
+});
 document.getElementById('setteings').addEventListener('click', (e) => {
   showSetting();
 });
