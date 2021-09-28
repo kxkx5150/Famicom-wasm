@@ -12,28 +12,29 @@ const keys = [
   ['ArrowLeft', 'Left'],
   ['ArrowRight', 'Right'],
 ];
-FCEUX().then((fceux_) => {
-  fceux = fceux_;
+
+
+function getGames() {
+  return localStorage.hasOwnProperty('games')
+    ? JSON.parse(localStorage['games'])
+    : {};
+}
+function startGame(u8){
   console.log(fceux);
+  fceux._initialized = !0,
   fceux.init('#output');
+  fceux.removeEventListener('game-loaded', loadGame);
   fceux.addEventListener('game-loaded', loadGame);
   storeState();
   gamepad = new GAMEPAD();
+  fceux.loadGame(u8);
+
   const updateLoop = () => {
     window.requestAnimationFrame(updateLoop);
     fceux.update();
     gamepad.updateGamepad();
   };
   window.requestAnimationFrame(updateLoop);
-});
-window.addEventListener('keydown', keyHandler);
-window.addEventListener('keyup', keyHandler);
-window.addEventListener('resize', resizeCanvas);
-
-function getGames() {
-  return localStorage.hasOwnProperty('games')
-    ? JSON.parse(localStorage['games'])
-    : {};
 }
 document.getElementById('fileInput').addEventListener('change', (e) => {
   const file = e.target.files[0];
@@ -43,7 +44,7 @@ document.getElementById('fileInput').addEventListener('change', (e) => {
     if (!this.result) return;
     const u8 = new Uint8Array(this.result);
     storeGame(file.name, u8);
-    fceux.loadGame(u8);
+    startGame(u8);
   };
   fileReader.readAsArrayBuffer(file);
 });
@@ -81,11 +82,10 @@ document.getElementById('saveButton').addEventListener('click', (e) => {
 });
 document.getElementById('loadButton').addEventListener('click', (e) => {
   const game = localStorage['save_game'];
+  if(!game)return;
   const u8 = new Uint8Array(JSON.parse(game));
-  fceux.loadGame(u8);
-  setTimeout(() => {
-    fceux.loadState();
-  }, 300);
+  startGame(u8);
+  fceux.loadState();
 });
 function storeState() {
   setInterval(() => {
@@ -160,4 +160,10 @@ function showSetting() {
     document.getElementById('settingdiv').style.left = 0;
   }, 10);
 }
+window.addEventListener('keydown', keyHandler);
+window.addEventListener('keyup', keyHandler);
+window.addEventListener('resize', resizeCanvas);
+FCEUX().then((fceux_) => {
+  fceux = fceux_;
+});
 resizeCanvas();
